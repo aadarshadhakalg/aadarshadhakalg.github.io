@@ -1,3 +1,5 @@
+Self-motivated Mobile App Developer, adept at building mobile apps based on customer preferences using latest technology including but not limited to Dart Programming Language and Flutter UI Toolkit. I have decent knowledge of other programming languages : C, C++, and Python. Having worked at different software companies till now, I can reckon I have developed good communication and in-depth problem solving skills. Leaning on work ethics, I not only look for me, but also for the benefit of the company and the clients themselves. I am dedicated, hard-working and enthusiastic young who always craves learning more about new technology everyday.
+
 ## Projects
 
 ### [Angular Dart Extension](https://github.com/aadarshadhakalg/ADSnippets)
