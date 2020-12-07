@@ -22,7 +22,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ### [KU Share](https://github.com/aadarshadhakalg/KU-Share)
 
-  A Social Network for the students of Kathmandu University. [Under Development]
+  A Social Network for the students of Kathmandu University. **[Under Development]**
+    
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/KU-Share) 
 
 <br/>
