@@ -3,6 +3,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Projects
@@ -26,6 +28,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Experiments
@@ -59,6 +63,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Clients Project
@@ -72,6 +78,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Volunteer and Social Works
@@ -81,6 +89,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Writing
@@ -90,6 +100,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Public Speaking
@@ -99,6 +111,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 <br/>
 <br/>
 <br/>
+
+
 ***
 
 ## Social Media
