@@ -51,7 +51,7 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 <br/>
 
-### [Typing Speed Python](hhttps://github.com/aadarshadhakalg/TypingSpeed-Python)
+### [Typing Speed Python](https://github.com/aadarshadhakalg/TypingSpeed-Python)
 
   Experimenting, python and python's gui library Tkinter  
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/TypingSpeed-Python)
@@ -137,10 +137,10 @@ You can find me on [![Twitter][1.2]][1], or on [![LinkedIn][3.2]][3].
 
 <!-- Icons -->
 
-[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
-[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn icon without padding)
+[1.2]: http://i.imgur.com/wWzX9uB.png
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png
 
 <!-- Links to your social media accounts -->
 
 [1]: https://twitter.com/aadarshadhakalg
-[2]: https://www.linkedin.com/in/aadarshadhakalg/
+[2]: https://www.linkedin.com/in/aadarshadhakalg
