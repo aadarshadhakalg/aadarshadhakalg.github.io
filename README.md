@@ -8,12 +8,49 @@
   [![Installs](https://vsmarketplacebadge.apphb.com/installs/aadarshadhakalg.adsnippets.svg)](https://marketplace.visualstudio.com/items?itemName=aadarshadhakalg.adsnippets)
   [![Ratings](https://vsmarketplacebadge.apphb.com/rating/aadarshadhakalg.adsnippets.svg)](https://marketplace.visualstudio.com/items?itemName=aadarshadhakalg.adsnippets)
   [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/ADSnippets)
+  
+ 
+### [KU Share](https://github.com/aadarshadhakalg/KU-Share)
+
+  A Social Network for the students of Kathmandu University. [Under Development]
+[![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/KU-Share) 
+
 
 
 ## Experiments
 
 
+### [Ecollenger](https://github.com/aadarshadhakalg/quantumhack-ecollenger)
+
+  Ecollenger is an application which motivates the user to perform eco-friendly activities in surrounding for maintaining balanced ecosystem.  
+[![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/quantumhack-ecollenger)
+
+
+### [YTS Downloader](https://github.com/aadarshadhakalg/yts-python)
+
+  Currently, a python script to search and download movie torrent files. I am planning to create a GUI Software and Mobile App.  
+[![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/yts-python)
+
+
+### [Typing Speed Python](hhttps://github.com/aadarshadhakalg/TypingSpeed-Python)
+
+  Experimenting, python and python's gui library Tkinter  
+[![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/TypingSpeed-Python)
+
+
+### [Hotel Management System For Small Hotels](https://github.com/aadarshadhakalg/HMS)
+
+  Hotel Management System written in QT5 ( C++ ), AWS RDS ( MYSQL ) for storing data. My first semester project.  
+[![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/HMS)
+
+
+
 ## Clients Project
+
+### [Nepal Sports](https:nepalsports.info)
+#### Nepal Sports
+
+  A WordPress News Website for leading sport news portal of Nepal.  
 
 
 ## Volunteer and Social Works
