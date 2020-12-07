@@ -1,13 +1,13 @@
 Self-motivated Mobile App Developer, adept at building mobile apps based on customer preferences using latest technology including but not limited to Dart Programming Language and Flutter UI Toolkit. I have decent knowledge of other programming languages : C, C++, and Python. Having worked at different software companies till now, I can reckon I have developed good communication and in-depth problem solving skills. Leaning on work ethics, I not only look for me, but also for the benefit of the company and the clients themselves. I am dedicated, hard-working and enthusiastic young who always craves learning more about new technology everyday.
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Projects
 ---
-
+<br/>
 ### [Angular Dart Extension](https://github.com/aadarshadhakalg/ADSnippets)
 
   This is the first VS Code extension for the Google's frontend framework [Angular Dart](https://github.com/dart-lang/angular). This extension generates boilerplate codes, template codes, and components of Angular Dart. 
@@ -23,14 +23,14 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
   A Social Network for the students of Kathmandu University. [Under Development]
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/KU-Share) 
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Experiments
 ---
-
+<br/>
 
 ### [Ecollenger](https://github.com/aadarshadhakalg/quantumhack-ecollenger)
 
@@ -56,48 +56,51 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/HMS)
 
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Clients Project
 ---
-
+<br/>
 ### [Nepal Sports](https:nepalsports.info)
 #### Nepal Sports
 
   A WordPress News Website for leading sport news portal of Nepal.  
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Volunteer and Social Works
 ---
+<br/>
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Writing
 ---
+<br/>
 
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Public Speaking
 ---
+<br/>
 
-
-
-
-
+<br/>
+<br/>
+<br/>
 ***
 
 ## Social Media
 ---
+<br/>
