@@ -101,6 +101,11 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Volunteer and Social Works
 ---
+* Event Volunteer IT Meet 2020, Kathmandu University
+* Technical Volunteer, Software Freedom Day 2020, Kathmandu University
+* Technical Volunteer, National Science Day 2020, Kathmandu University
+* Executive Member, Kathmandu University Computer Club, 2021
+* Technical Volunteer. KU Hackfest 2021, Kathmandu University
 
 <br/>
 <br/>
@@ -111,6 +116,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Writing
 ---
+
+* SEO: The Never Ending Marathon, IT Express 2020
 
 <br/>
 <br/>
@@ -133,7 +140,7 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 ---
 <!-- Actual text -->
 
-You can find me on [![Twitter][1.2]][1], or on [![LinkedIn][3.2]][3].
+You can find me on [![Twitter][1.2]][1], or on [![LinkedIn][2.2]][2]. or on other networks with username @aadarshadhakalg
 
 <!-- Icons -->
 
