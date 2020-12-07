@@ -18,7 +18,8 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
   [![Ratings](https://vsmarketplacebadge.apphb.com/rating/aadarshadhakalg.adsnippets.svg)](https://marketplace.visualstudio.com/items?itemName=aadarshadhakalg.adsnippets)
   [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/ADSnippets)
   
- 
+<br/>
+
 ### [KU Share](https://github.com/aadarshadhakalg/KU-Share)
 
   A Social Network for the students of Kathmandu University. [Under Development]
@@ -40,17 +41,23 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/quantumhack-ecollenger)
 
 
+<br/>
+
 ### [YTS Downloader](https://github.com/aadarshadhakalg/yts-python)
 
   Currently, a python script to search and download movie torrent files. I am planning to create a GUI Software and Mobile App.  
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/yts-python)
 
 
+<br/>
+
 ### [Typing Speed Python](hhttps://github.com/aadarshadhakalg/TypingSpeed-Python)
 
   Experimenting, python and python's gui library Tkinter  
 [![Star this repo](https://img.shields.io/github/stars/saileshbro/scientific-calculator-qt.svg)](https://github.com/aadarshadhakalg/TypingSpeed-Python)
 
+
+<br/>
 
 ### [Hotel Management System For Small Hotels](https://github.com/aadarshadhakalg/HMS)
 
@@ -67,10 +74,23 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Clients Project
 ---
-### [Nepal Sports](https:nepalsports.info)
-#### Nepal Sports
+### [Nepal Sports](https:nepalsports.info) 
+*Under: NepalSports*
 
-  A WordPress News Website for leading sport news portal of Nepal.  
+### [Prembasti School](https://play.google.com/store/apps/details?id=com.techhimalaya.prembasti) 
+*Under: Tech Himalaya*
+
+### [Studymandu](https://play.google.com/store/apps/details?id=com.techhimalaya.prembasti) 
+*Under: Radiant Elixir Softtech*
+  .  
+### [Mero Karobar](https://play.google.com/store/apps/details?id=com.bytecaretech.merokarobar) 
+*Under: Bytecare Technology*
+  
+### [Voice of Nepal S3](https://play.google.com/store/apps/details?id=co.techquantum.voiceofnepal) 
+*Under: Quantum IT Solutions* 
+  
+### [Tech Himalaya](https://techhimalaya.com/) 
+*Under: Tech Himalaya*
 
 <br/>
 <br/>
@@ -111,3 +131,16 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Social Media
 ---
+<!-- Actual text -->
+
+You can find me on [![Twitter][1.2]][1], or on [![LinkedIn][3.2]][3].
+
+<!-- Icons -->
+
+[1.2]: http://i.imgur.com/wWzX9uB.png (twitter icon without padding)
+[2.2]: https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/linkedin-3-16.png (LinkedIn icon without padding)
+
+<!-- Links to your social media accounts -->
+
+[1]: https://twitter.com/aadarshadhakalg
+[2]: https://www.linkedin.com/in/aadarshadhakalg/
