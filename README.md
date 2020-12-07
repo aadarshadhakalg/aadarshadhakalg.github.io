@@ -9,7 +9,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Projects
 ---
-<br/>
 ### [Angular Dart Extension](https://github.com/aadarshadhakalg/ADSnippets)
 
   This is the first VS Code extension for the Google's frontend framework [Angular Dart](https://github.com/dart-lang/angular). This extension generates boilerplate codes, template codes, and components of Angular Dart. 
@@ -34,7 +33,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Experiments
 ---
-<br/>
 
 ### [Ecollenger](https://github.com/aadarshadhakalg/quantumhack-ecollenger)
 
@@ -69,7 +67,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Clients Project
 ---
-<br/>
 ### [Nepal Sports](https:nepalsports.info)
 #### Nepal Sports
 
@@ -84,7 +81,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Volunteer and Social Works
 ---
-<br/>
 
 <br/>
 <br/>
@@ -95,7 +91,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Writing
 ---
-<br/>
 
 <br/>
 <br/>
@@ -106,7 +101,6 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Public Speaking
 ---
-<br/>
 
 <br/>
 <br/>
@@ -117,4 +111,3 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 
 ## Social Media
 ---
-<br/>
