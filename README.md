@@ -89,6 +89,12 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
   
 ### [Voice of Nepal S3](https://play.google.com/store/apps/details?id=co.techquantum.voiceofnepal) 
 *Under: Quantum IT Solutions* 
+
+### [Voice of Nepal Kids](https://play.google.com/store/apps/details?id=co.techquantum.voiceofnepalkids) 
+*Under: Quantum IT Solutions* 
+
+### [Nepal's Next Top Model](https://play.google.com/store/apps/details?id=co.techquantum.nepalsnexttopmodel.NNM) 
+*Under: Quantum IT Solutions* 
   
 ### [Tech Himalaya](https://techhimalaya.com/) 
 *Under: Tech Himalaya*
