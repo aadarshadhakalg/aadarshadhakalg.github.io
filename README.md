@@ -125,6 +125,7 @@ Self-motivated Mobile App Developer, adept at building mobile apps based on cust
 ---
 
 * SEO: The Never Ending Marathon, IT Express 2020
+* [Medium](https://aadarshadhakal.medium.com)
 
 <br/>
 <br/>
