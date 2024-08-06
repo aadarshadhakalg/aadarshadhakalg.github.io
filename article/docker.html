@@ -1,247 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-    <channel>
-        <title></title>
-        <link>undefined</link>
-        <description>undefined</description>
-        <lastBuildDate>Tue, 06 Aug 2024 08:47:13 GMT</lastBuildDate>
-        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-        <generator>Joplin Pages Publisher</generator>
-        <item>
-            <title><![CDATA[Influx DB and Grafana Installation with Docker]]></title>
-            <guid>5c0cd5e10ead47c09a645070b1acdb0c</guid>
-            <pubDate>Tue, 06 Aug 2024 02:20:12 GMT</pubDate>
-            <content:encoded><![CDATA[<h2 id="install-docker">Install Docker</h2>
-<ol>
-<li>Uninstalled previous docker packages if installed</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-keyword">for</span> pkg <span class="hljs-keyword">in</span> docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; <span class="hljs-keyword">do</span> sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-built_in">remove</span> <span class="hljs-variable">$pkg</span>; done</code></pre></div>
-<ol start="2">
-<li>Setup Docker's <code>apt</code> repository</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-comment"># Add Docker's official GPG key:</span>
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m <span class="hljs-number">0755</span> -d <span class="hljs-regexp">/etc/</span>apt/keyrings
-sudo curl -fsSL https:<span class="hljs-regexp">//</span>download.docker.com<span class="hljs-regexp">/linux/u</span>buntu<span class="hljs-regexp">/gpg -o /</span>etc<span class="hljs-regexp">/apt/</span>keyrings/docker.asc
-sudo chmod a+r <span class="hljs-regexp">/etc/</span>apt<span class="hljs-regexp">/keyrings/</span>docker.asc
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
 
-<span class="hljs-comment"># Add the repository to Apt sources:</span>
-echo \
-  <span class="hljs-string">"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release &amp;&amp; echo "</span><span class="hljs-variable">$VERSION_CODENAME</span><span class="hljs-string">") stable"</span> | \
-  sudo tee <span class="hljs-regexp">/etc/</span>apt<span class="hljs-regexp">/sources.list.d/</span>docker.list &gt; <span class="hljs-regexp">/dev/</span>null
-sudo apt-get update</code></pre></div>
-<ol start="3">
-<li>Install Latest Docker Packages</li>
-</ol>
-<div><pre class="hljs"><code>sudo apt-get install docker-ce docker-ce-<span class="hljs-keyword">cli</span> containerd.io docker-buildx-<span class="hljs-keyword">plugin</span> docker-compose-<span class="hljs-keyword">plugin</span></code></pre></div>
-<ol start="4">
-<li>Add User to Docker Group</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-attribute">sudo usermod -aG docker your_username</span></code></pre></div>
-<h2 id="install-grafana">Install Grafana</h2>
-<h3 id="docker-compose">Docker Compose</h3>
-<ol>
-<li>Create a <code>docker-compose.yml</code> file with this content</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-attribute">version</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attribute">services</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">grafana</span><span class="hljs-punctuation">:</span>
-    <span class="hljs-attribute">image</span><span class="hljs-punctuation">:</span> <span class="hljs-string">grafana/grafana-oss</span>
-    <span class="hljs-attribute">container_name</span><span class="hljs-punctuation">:</span> <span class="hljs-string">grafana</span>
-    <span class="hljs-attribute">restart</span><span class="hljs-punctuation">:</span> <span class="hljs-string">unless-stopped</span>
-    <span class="hljs-attribute">ports</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">'3000:3000'</span>
-    <span class="hljs-attribute">environment</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SERVER_ROOT_URL=http://grafana.aadarshadhakal.com.np/</span>
-    <span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">grafana-storage:/var/lib/grafana</span>
-
-<span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">grafana-storage</span><span class="hljs-punctuation">:</span> <span class="hljs-string">{}</span></code></pre></div>
-<ol start="2">
-<li>Run containers<br />
-<code>docker compose up -d</code></li>
-</ol>
-<p>This runs the services defined inside <code>docker-compose.yml</code> file in detached mode.</p>
-<h3 id="setup-nginx-reverse-proxy">Setup Nginx Reverse Proxy</h3>
-<ol>
-<li>
-<p>Install Nginx<br />
-<code>sudo apt update &amp;&amp; sudo apt install nginx</code></p>
-</li>
-<li>
-<p>Install certbot for SSL certificatr<br />
-<code>sudo apt install certbot python3-certbot-nginx</code></p>
-</li>
-<li>
-<p>Create a new nginx web server  <code>/etc/nginx/sites-available/&lt;YOURDOMAIN&gt;</code> with the following content.</p>
-</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-section">server</span> {
-
-    <span class="hljs-attribute">server_name</span> &lt;YOURDOMAIN&gt;;
-
-    <span class="hljs-section">location</span> / {
-        <span class="hljs-attribute">proxy_set_header</span> Host <span class="hljs-variable">$host</span>;
-        <span class="hljs-attribute">proxy_set_header</span> X-Real-IP <span class="hljs-variable">$remote_addr</span>;
-        <span class="hljs-attribute">proxy_buffering</span> <span class="hljs-literal">off</span>;
-        <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:3000;
-    }
-}
-</code></pre></div>
-<ol start="4">
-<li>
-<p>Enable the newly created nginx web server<br />
-<code>sudo ln -s /etc/nginx/sites-available/&lt;YOURDOMAIN&gt; /etc/nginx/sites-enabled/&lt;YOURDOMAIN&gt;</code></p>
-</li>
-<li>
-<p>Install SSL certificate using Certbot<br />
-<code>sudo certbot run -d &lt;YOURDOMAIN&gt; -d www.&lt;YOURDOMAIN&gt;</code></p>
-</li>
-</ol>
-<blockquote>
-<p>Default Username and Password is <code>admin</code> and <code>admin</code></p>
-</blockquote>
-<h2 id="install-influx-db">Install Influx DB</h2>
-<ol>
-<li>Create a <code>docker-compose.yml</code> file with the following contents</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-attribute">version</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'3.8'</span>
-
-<span class="hljs-attribute">services</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">influxdb2</span><span class="hljs-punctuation">:</span>
-    <span class="hljs-attribute">image</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb:2</span>
-    <span class="hljs-attribute">restart</span><span class="hljs-punctuation">:</span> <span class="hljs-string">always</span>
-    <span class="hljs-attribute">ports</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">8086:8086</span>
-    <span class="hljs-attribute">environment</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_MODE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">setup</span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_USERNAME_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-username</span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_PASSWORD_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-password </span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-token</span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_ORG</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&lt;YOUR ORGANIZATIO NAME&gt; </span>
-      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_BUCKET</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&lt;BUCKET NAME&gt;</span>
-    <span class="hljs-attribute">secrets</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-username</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-password</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-token</span>
-    <span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">type: volume</span>
-        <span class="hljs-attribute">source</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb2-data</span>
-        <span class="hljs-attribute">target</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/var/lib/influxdb2</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-string">type: volume</span>
-        <span class="hljs-attribute">source</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb2-config</span>
-        <span class="hljs-attribute">target</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/etc/influxdb2</span>
-<span class="hljs-attribute">secrets</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">influxdb2-admin-username</span><span class="hljs-punctuation">:</span>
-    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-username</span>
-  <span class="hljs-attribute">influxdb2-admin-password</span><span class="hljs-punctuation">:</span>
-    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-password</span>
-  <span class="hljs-attribute">influxdb2-admin-token</span><span class="hljs-punctuation">:</span>
-    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-token</span>
-<span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">influxdb2-data</span><span class="hljs-punctuation">:</span>
-  <span class="hljs-attribute">influxdb2-config</span><span class="hljs-punctuation">:</span></code></pre></div>
-<ol start="2">
-<li>Execute this command from the directory where your <code>docker-compose.yml</code> file is located.</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;USERNAME&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-username</span>
-<span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;PASSWORD&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-password</span>
-<span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;TOKEN&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-token</span></code></pre></div>
-<p>*Replace USERNAME, PASSWORD and TOKEN</p>
-<ol start="3">
-<li>Start services<br />
-<code>docker compose up -d</code></li>
-</ol>
-<h2 id="add-influx-db-as-data-source-in-grafana">Add Influx DB as Data Source in Grafana</h2>
-<ol>
-<li>Login to grafana dashboard</li>
-<li>From the drawer menu go to Data Sources</li>
-<li>Click on Add New Data Source button and select InfluxDB</li>
-<li>Select <strong>FLUX</strong> as the Query Language</li>
-<li>Add InfluxDB server url and port in the URL text field</li>
-<li>Enable <strong>Skip TLS Verify</strong></li>
-<li>Enter <strong>Organization Name</strong>, <strong>Bucket Name</strong> and <strong>Token</strong> and click Save and Test</li>
-</ol>
-<blockquote>
-<p>To get API token, in InfluxDB dashboard go to Load Data  &gt; API Tokens &gt; Generate API Token or You can use the token provided during InfluxDB installation</p>
-</blockquote>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Storage Locked / Cannot Use CEPH pool]]></title>
-            <guid>8ef3d8f14d624ec1b2e204410bf573fd</guid>
-            <pubDate>Sat, 03 Aug 2024 17:10:18 GMT</pubDate>
-            <content:encoded><![CDATA[<p>cThis issue arises when you have a bad CRUSH rule or overall Ceph configuration set.</p>
-<p>First of all, check the replication rule in the pool configuration.</p>
-<p>In my case, I had set the <code>crush rule</code> or <code>replication</code> to <code>replicated_rule</code>, which by default disperses replicas across different hosts. I was running a single-node cluster, so the total number of hosts was 1. However, my number of replicas was set to 3 and the minimum number of replicas was set to 2. Since there was a single host, and the replication type was set to host, and the minimum replica was set to 2, the configuration failed.</p>
-<p>For me, there were two solutions: either decrease the minimum replica to 1 to match the number of hosts, or, since I had two OSDs, change the replication type to OSD.</p>
-<p>Both solutions work, but I preferred the second, so I set the replication type to OSD because some amount of redundancy is necessary to keep the data safe.</p>
-<h2 id="creating-a-crush-rule">Creating a CRUSH Rule</h2>
-<p>There are two types of replication:</p>
-<ol>
-<li>Across hosts</li>
-<li>Across OSDs</li>
-</ol>
-<p>Step-by-step commands:</p>
-<ol>
-<li><code>ceph osd tree</code></li>
-<li><code>ceph osd crush rule create-replicated replicated_osd default osd</code></li>
-<li><code>ceph osd pool set prodpool crush_rule replicated_osd</code></li>
-</ol>
-<p>If you encounter any issues while using Ceph with Proxmox VE, or if you applied a wrong or bad configuration by mistake and are unable to log in to the Proxmox VE web interface, please fix the Ceph issue first using the command line by logging into an SSH session and then restarting Proxmox system services:</p>
-<div><pre class="hljs"><code>systemctl restart pve-cluster.service
-systemctl restart pvedaemon.service
-systemctl restart pveproxy.service</code></pre></div>
-<h3 id="cheatsheet">Cheatsheet</h3>
-<ol>
-<li>
-<p>Dump details of all CRUSH rules:</p>
-<div><pre class="hljs"><code>ceph osd crush rule dump</code></pre></div>
-</li>
-<li>
-<p>List all CRUSH rules:</p>
-<div><pre class="hljs"><code>ceph osd crush rule ls</code></pre></div>
-</li>
-<li>
-<p>List OSD Tree:</p>
-<div><pre class="hljs"><code>ceph osd tree</code></pre></div>
-</li>
-<li>
-<p>Remove a CRUSH rule:</p>
-<div><pre class="hljs"><code>ceph osd crush rule rm &lt;name&gt;</code></pre></div>
-</li>
-<li>
-<p>Create a CRUSH rule:</p>
-<div><pre class="hljs"><code>ceph osd crush rule create-replicated &lt;rule_name&gt; &lt;crush_tree_root&gt; &lt;<span class="hljs-built_in">type</span>&gt; [&lt;class&gt;]</code></pre></div>
-<p>Example:</p>
-<div><pre class="hljs"><code>ceph osd crush rule create-replicated replicated_osd default osd</code></pre></div>
-</li>
-<li>
-<p>List all pools:</p>
-<div><pre class="hljs"><code>ceph osd pool ls</code></pre></div>
-</li>
-<li>
-<p>Show pool status:</p>
-<div><pre class="hljs"><code>ceph osd pool stats</code></pre></div>
-</li>
-<li>
-<p>Set CRUSH rule to the pool:</p>
-<div><pre class="hljs"><code>ceph osd pool <span class="hljs-built_in">set</span> &lt;pool_name&gt; crush_rule &lt;crush_rule_name&gt;</code></pre></div>
-<p>Example:</p>
-<div><pre class="hljs"><code>ceph osd pool <span class="hljs-built_in">set</span> prodpool crush_rule replicated_osd</code></pre></div>
-</li>
-</ol>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Docker]]></title>
-            <guid>6ac61bd07dee479189d41c2ea22c3b18</guid>
-            <pubDate>Tue, 14 May 2024 05:52:43 GMT</pubDate>
-            <content:encoded><![CDATA[<h1 id="docker">Docker</h1>
+    <title>Docker - Notes by Aadarsha</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">Notes by Aadarsha</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">Docker</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1715665963980"
+                  >2024-05-14 11:37</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1715831431777"
+                  >2024-05-16 09:35</time
+                ></span
+              >
+            </div>
+            
+            <div>
+              Keywords: 
+              <span class="keyword">DevOps</span>
+              
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><h1 id="docker">Docker</h1>
 <h2 id="introduction">Introduction</h2>
 <hr />
 <h3 id="open-container-initiative">Open Container Initiative</h3>
@@ -556,7 +353,8 @@ CMD [ <span class="hljs-string">"node"</span>, <span class="hljs-string">"index.
 <ul>
 <li><a title="https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile" href="https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile">https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile</a></li>
 </ul>
-]]></content:encoded>
-        </item>
-    </channel>
-</rss>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
