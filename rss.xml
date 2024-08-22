@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 22 Aug 2024 17:26:51 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 22 Aug 2024 17:27:51 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -162,6 +162,170 @@ sudo systemctl <span class="hljs-built_in">disable</span> networkd-dispatcher.se
 ]]></content:encoded>
         </item>
         <item>
+            <title><![CDATA[Influx DB and Grafana Installation with Docker]]></title>
+            <guid>5c0cd5e10ead47c09a645070b1acdb0c</guid>
+            <pubDate>Tue, 06 Aug 2024 02:20:12 GMT</pubDate>
+            <content:encoded><![CDATA[<h2 id="install-docker">Install Docker</h2>
+<ol>
+<li>Uninstall previous docker packages if installed</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-keyword">for</span> pkg <span class="hljs-keyword">in</span> docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; <span class="hljs-keyword">do</span> sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-built_in">remove</span> <span class="hljs-variable">$pkg</span>; done</code></pre></div>
+<ol start="2">
+<li>Setup Docker's <code>apt</code> repository</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-comment"># Add Docker's official GPG key:</span>
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m <span class="hljs-number">0755</span> -d <span class="hljs-regexp">/etc/</span>apt/keyrings
+sudo curl -fsSL https:<span class="hljs-regexp">//</span>download.docker.com<span class="hljs-regexp">/linux/u</span>buntu<span class="hljs-regexp">/gpg -o /</span>etc<span class="hljs-regexp">/apt/</span>keyrings/docker.asc
+sudo chmod a+r <span class="hljs-regexp">/etc/</span>apt<span class="hljs-regexp">/keyrings/</span>docker.asc
+
+<span class="hljs-comment"># Add the repository to Apt sources:</span>
+echo \
+  <span class="hljs-string">"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo "</span><span class="hljs-variable">$VERSION_CODENAME</span><span class="hljs-string">") stable"</span> | \
+  sudo tee <span class="hljs-regexp">/etc/</span>apt<span class="hljs-regexp">/sources.list.d/</span>docker.list &gt; <span class="hljs-regexp">/dev/</span>null
+sudo apt-get update</code></pre></div>
+<ol start="3">
+<li>Install Latest Docker Packages</li>
+</ol>
+<div><pre class="hljs"><code>sudo apt-get install docker-ce docker-ce-<span class="hljs-keyword">cli</span> containerd.io docker-buildx-<span class="hljs-keyword">plugin</span> docker-compose-<span class="hljs-keyword">plugin</span></code></pre></div>
+<ol start="4">
+<li>Add User to Docker Group</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-attribute">sudo usermod -aG docker your_username</span></code></pre></div>
+<h2 id="install-grafana">Install Grafana</h2>
+<h3 id="docker-compose">Docker Compose</h3>
+<ol>
+<li>Create a <code>docker-compose.yml</code> file with this content</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-attribute">version</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'3.8'</span>
+
+<span class="hljs-attribute">services</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">grafana</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-attribute">image</span><span class="hljs-punctuation">:</span> <span class="hljs-string">grafana/grafana-oss</span>
+    <span class="hljs-attribute">container_name</span><span class="hljs-punctuation">:</span> <span class="hljs-string">grafana</span>
+    <span class="hljs-attribute">restart</span><span class="hljs-punctuation">:</span> <span class="hljs-string">unless-stopped</span>
+    <span class="hljs-attribute">ports</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">'3000:3000'</span>
+    <span class="hljs-attribute">environment</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">GF_SERVER_ROOT_URL=http://grafana.aadarshadhakal.com.np/</span>
+    <span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">grafana-storage:/var/lib/grafana</span>
+
+<span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">grafana-storage</span><span class="hljs-punctuation">:</span> <span class="hljs-string">{}</span></code></pre></div>
+<ol start="2">
+<li>Run containers<br />
+<code>docker compose up -d</code></li>
+</ol>
+<p>This runs the services defined inside <code>docker-compose.yml</code> file in detached mode.</p>
+<h3 id="setup-nginx-reverse-proxy">Setup Nginx Reverse Proxy</h3>
+<ol>
+<li>
+<p>Install Nginx<br />
+<code>sudo apt update &amp;&amp; sudo apt install nginx</code></p>
+</li>
+<li>
+<p>Install certbot for SSL certificatr<br />
+<code>sudo apt install certbot python3-certbot-nginx</code></p>
+</li>
+<li>
+<p>Create a new nginx web server  <code>/etc/nginx/sites-available/&lt;YOURDOMAIN&gt;</code> with the following content.</p>
+</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-section">server</span> {
+
+    <span class="hljs-attribute">server_name</span> &lt;YOURDOMAIN&gt;;
+
+    <span class="hljs-section">location</span> / {
+        <span class="hljs-attribute">proxy_set_header</span> Host <span class="hljs-variable">$host</span>;
+        <span class="hljs-attribute">proxy_set_header</span> X-Real-IP <span class="hljs-variable">$remote_addr</span>;
+        <span class="hljs-attribute">proxy_buffering</span> <span class="hljs-literal">off</span>;
+        <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:3000;
+    }
+}
+</code></pre></div>
+<ol start="4">
+<li>
+<p>Enable the newly created nginx web server<br />
+<code>sudo ln -s /etc/nginx/sites-available/&lt;YOURDOMAIN&gt; /etc/nginx/sites-enabled/&lt;YOURDOMAIN&gt;</code></p>
+</li>
+<li>
+<p>Install SSL certificate using Certbot<br />
+<code>sudo certbot run -d &lt;YOURDOMAIN&gt; -d www.&lt;YOURDOMAIN&gt;</code></p>
+</li>
+</ol>
+<blockquote>
+<p>Default Username and Password is <code>admin</code> and <code>admin</code></p>
+</blockquote>
+<h2 id="install-influx-db">Install Influx DB</h2>
+<ol>
+<li>Create a <code>docker-compose.yml</code> file with the following contents</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-attribute">version</span><span class="hljs-punctuation">:</span> <span class="hljs-string">'3.8'</span>
+
+<span class="hljs-attribute">services</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">influxdb2</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-attribute">image</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb:2</span>
+    <span class="hljs-attribute">restart</span><span class="hljs-punctuation">:</span> <span class="hljs-string">always</span>
+    <span class="hljs-attribute">ports</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">8086:8086</span>
+    <span class="hljs-attribute">environment</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_MODE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">setup</span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_USERNAME_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-username</span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_PASSWORD_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-password </span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/run/secrets/influxdb2-admin-token</span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_ORG</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&lt;YOUR ORGANIZATIO NAME&gt; </span>
+      <span class="hljs-attribute">DOCKER_INFLUXDB_INIT_BUCKET</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&lt;BUCKET NAME&gt;</span>
+    <span class="hljs-attribute">secrets</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-username</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-password</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">influxdb2-admin-token</span>
+    <span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">type: volume</span>
+        <span class="hljs-attribute">source</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb2-data</span>
+        <span class="hljs-attribute">target</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/var/lib/influxdb2</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">type: volume</span>
+        <span class="hljs-attribute">source</span><span class="hljs-punctuation">:</span> <span class="hljs-string">influxdb2-config</span>
+        <span class="hljs-attribute">target</span><span class="hljs-punctuation">:</span> <span class="hljs-string">/etc/influxdb2</span>
+<span class="hljs-attribute">secrets</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">influxdb2-admin-username</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-username</span>
+  <span class="hljs-attribute">influxdb2-admin-password</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-password</span>
+  <span class="hljs-attribute">influxdb2-admin-token</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-attribute">file</span><span class="hljs-punctuation">:</span> <span class="hljs-string">.env.influxdb2-admin-token</span>
+<span class="hljs-attribute">volumes</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">influxdb2-data</span><span class="hljs-punctuation">:</span>
+  <span class="hljs-attribute">influxdb2-config</span><span class="hljs-punctuation">:</span></code></pre></div>
+<ol start="2">
+<li>Execute this command from the directory where your <code>docker-compose.yml</code> file is located.</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;USERNAME&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-username</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;PASSWORD&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-password</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;TOKEN&gt;"</span> &gt; <span class="hljs-string">.env.influxdb2-admin-token</span></code></pre></div>
+<p>*Replace USERNAME, PASSWORD and TOKEN</p>
+<ol start="3">
+<li>Start services<br />
+<code>docker compose up -d</code></li>
+</ol>
+<h2 id="add-influx-db-as-data-source-in-grafana">Add Influx DB as Data Source in Grafana</h2>
+<ol>
+<li>Login to grafana dashboard</li>
+<li>From the drawer menu go to Data Sources</li>
+<li>Click on Add New Data Source button and select InfluxDB</li>
+<li>Select <strong>FLUX</strong> as the Query Language</li>
+<li>Add InfluxDB server url and port in the URL text field</li>
+<li>Enable <strong>Skip TLS Verify</strong></li>
+<li>Enter <strong>Organization Name</strong>, <strong>Bucket Name</strong> and <strong>Token</strong> and click Save and Test</li>
+</ol>
+<blockquote>
+<p>To get API token, in InfluxDB dashboard go to Load Data  &gt; API Tokens &gt; Generate API Token or You can use the token provided during InfluxDB installation</p>
+</blockquote>
+]]></content:encoded>
+        </item>
+        <item>
             <title><![CDATA[Storage Locked / Cannot Use CEPH pool]]></title>
             <guid>8ef3d8f14d624ec1b2e204410bf573fd</guid>
             <pubDate>Sat, 03 Aug 2024 17:10:18 GMT</pubDate>
@@ -225,6 +389,389 @@ systemctl restart pveproxy.service</code></pre></div>
 <div><pre class="hljs"><code>ceph osd pool <span class="hljs-built_in">set</span> prodpool crush_rule replicated_osd</code></pre></div>
 </li>
 </ol>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Deploying docker image to k8s using azure container registry]]></title>
+            <guid>f70447a7ee2644c3a7dfccba8d294a72</guid>
+            <pubDate>Wed, 17 Jul 2024 13:01:41 GMT</pubDate>
+            <content:encoded><![CDATA[<ol>
+<li>Install azure cli</li>
+<li>Login to azure cli <code>az login</code></li>
+<li>Create a container registry from azure portal, replace ACR_NAME and SERVICE_PRINCIPLE_NAME in the below script.</li>
+<li>Create a service principle</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-comment"># This script requires Azure CLI version 2.25.0 or later. Check version with `az --version`.</span>
+
+<span class="hljs-comment"># Modify for your environment.</span>
+<span class="hljs-comment"># ACR_NAME: The name of your Azure Container Registry</span>
+<span class="hljs-comment"># SERVICE_PRINCIPAL_NAME: Must be unique within your AD tenant</span>
+ACR_NAME=<span class="hljs-variable">$containerRegistry</span>
+SERVICE_PRINCIPAL_NAME=<span class="hljs-variable">$servicePrincipal</span>
+
+<span class="hljs-comment"># Obtain the full registry ID</span>
+ACR_REGISTRY_ID=$(az acr show --name <span class="hljs-variable">$ACR_NAME</span> --query <span class="hljs-string">"id"</span> --output tsv)
+<span class="hljs-comment"># echo $registryId</span>
+
+<span class="hljs-comment"># Create the service principal with rights scoped to the registry.</span>
+<span class="hljs-comment"># Default permissions are for docker pull access. Modify the '--role'</span>
+<span class="hljs-comment"># argument value as desired:</span>
+<span class="hljs-comment"># acrpull:     pull only</span>
+<span class="hljs-comment"># acrpush:     push and pull</span>
+<span class="hljs-comment"># owner:       push, pull, and assign roles</span>
+PASSWORD=$(az ad sp create-for-rbac --name <span class="hljs-variable">$SERVICE_PRINCIPAL_NAME</span> --scopes <span class="hljs-variable">$ACR_REGISTRY_ID</span> --role acrpull --query <span class="hljs-string">"password"</span> --output tsv)
+USER_NAME=$(az ad sp list --display-name <span class="hljs-variable">$SERVICE_PRINCIPAL_NAME</span> --query <span class="hljs-string">"[].appId"</span> --output tsv)
+
+<span class="hljs-comment"># Output the service principal's credentials; use these in your services and</span>
+<span class="hljs-comment"># applications to authenticate to the container registry.</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Service principal ID: <span class="hljs-variable">$USER_NAME</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Service principal password: <span class="hljs-variable">$PASSWORD</span>"</span></code></pre></div>
+<p>5.Create NFS for persisting data<br />
+6. Create a PV in master node<br />
+7. Create a PVC in master node<br />
+8. Create a secret</p>
+<div><pre class="hljs"><code>kubectl create<span class="hljs-built_in"> secret </span>docker-registry &lt;secret-name&gt; \
+    --namespace &lt;namespace&gt; \
+    <span class="hljs-attribute">--docker-server</span>=&lt;container-registry-name&gt;.azurecr.io \
+    <span class="hljs-attribute">--docker-username</span>=&lt;service-principal-ID&gt; \
+    <span class="hljs-attribute">--docker-password</span>=&lt;service-principal-password&gt;</code></pre></div>
+<ol start="9">
+<li>Use in deployment</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">my-awesome-app-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">awesomeapps</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">main-app-container</span>
+      <span class="hljs-attr">image:</span> <span class="hljs-string">myregistry.azurecr.io/my-awesome-app:v1</span>
+      <span class="hljs-attr">imagePullPolicy:</span> <span class="hljs-string">IfNotPresent</span>
+  <span class="hljs-attr">imagePullSecrets:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">acr-secret</span></code></pre></div>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Docker]]></title>
+            <guid>6ac61bd07dee479189d41c2ea22c3b18</guid>
+            <pubDate>Tue, 14 May 2024 05:52:43 GMT</pubDate>
+            <content:encoded><![CDATA[<h1 id="docker">Docker</h1>
+<h2 id="introduction">Introduction</h2>
+<hr />
+<h3 id="open-container-initiative">Open Container Initiative</h3>
+<ol>
+<li>Runtime Specification - How a image is converted to container and run</li>
+<li>Image Specification - What configuration in what format a image file should be written</li>
+<li>Distribution Specification - How the images should be distributed /shared. Like, container registry, docke hub etc..</li>
+</ol>
+<h3 id="containers">Containers</h3>
+<ul>
+<li>Shared Kernel</li>
+<li>No dependency conflicts</li>
+<li>Isolated</li>
+<li>Faster startup and shutdown</li>
+<li>Faster provisioning and decommissioning</li>
+<li>Lightweight enough to use in development!</li>
+</ul>
+<h3 id="linux-kernel-internals">Linux Kernel Internals</h3>
+<ol>
+<li>Name spaces</li>
+<li>Cgroups ( Control memory and cpu allocation / priorities )</li>
+<li>overlayfs file system</li>
+</ol>
+<p><strong>Docker Desktop Creates a Linux VM to host docker containers in Windows and Mac OS, for Linux, since it's already a linux host new Linux VM is not created.</strong></p>
+<p><strong>In the host system, docker container related files are in <code>/var/lib/docker</code> folder</strong></p>
+<p><img src="/_resources/eb2c5dc36ea546dbb94d869aff858f1e.png" /></p>
+<h2 id="data-within-containers">Data within Containers</h2>
+<ul>
+<li>By default all data created or modified in containers is short lived</li>
+<li>If some data should be present every time a container image is run (e.g dependency), it should be built into the image itself</li>
+<li>if data is generated by the application that needs to be persisted, a <strong>volume</strong> should to store that outside of the ephemeral ( short lived ) container filesystem</li>
+<li><strong>bind mount</strong> should be used to persist configuration files, Not recommended for application data</li>
+<li>Bind mount can also be used to support hot-reload during development</li>
+</ul>
+<h2 id="building-container-images">Building Container Images</h2>
+<hr />
+<h3 id="male-cook-application-recipe">👨‍🍳 Application Recipe:</h3>
+<ol>
+<li>Start with an Operating System</li>
+<li>Install the language runtime</li>
+<li>Install any application dependencies</li>
+<li>Set up the execution environment</li>
+<li>Run the application</li>
+</ol>
+<h3 id="docker-build-context">Docker Build Context</h3>
+<p><img src="/_resources/a5dbc2e93b764feab7c90a6164b665d9.png" /></p>
+<h3 id="common-build-commands">Common Build Commands</h3>
+<p>FROM: Specifies the base layer or operating system for the container image.<br />
+RUN: Executes a command during the build phase.<br />
+COPY: Copies files from the build context (e.g., your local system) to the container image.<br />
+CMD: Provides a command to be executed when the container starts.</p>
+<p><strong>A hash (#) is used for comments. Instructions are written in all caps, followed by arguments.</strong></p>
+<h3 id="dockerfile">Dockerfile</h3>
+<p>A image spec and configuration file</p>
+<h4 id="a-naive-implementation-example">A Naive Implementation example</h4>
+<div><pre class="hljs"><code><span class="hljs-keyword">FROM</span> node
+<span class="hljs-keyword">COPY</span><span class="language-bash"> . .</span>
+<span class="hljs-keyword">RUN</span><span class="language-bash"> npm install</span>
+<span class="hljs-keyword">CMD</span><span class="language-bash"> [ <span class="hljs-string">"node"</span>, <span class="hljs-string">"index.js"</span> ]</span></code></pre></div>
+<h4 id="improvements">Improvements</h4>
+<ol>
+<li>Pin the base image to improve security and build time</li>
+<li>Set a working directory for clarity</li>
+<li>Copy dependencies files before source code and install dependencies. <strong>This will cache dependency installation layer while performing subsequent builds. While copying it with source code and getting dependencies afterwards, changes in source code will cause dependency fetch everytime the image is built. But, source code change doesnot always means the dependencies are also changed</strong></li>
+<li>Use a non root user for security</li>
+<li>Configure for production environment ( No debugger, no dev dependencies )</li>
+<li>Add useful metadata</li>
+<li>Use a cache mount to speedup dependency installation ( Buildkit feature )</li>
+<li>Use multi-stage build</li>
+</ol>
+<h4 id="a-good-implementation-example">A good implementation example</h4>
+<div><pre class="hljs"><code><span class="hljs-comment">#-------------------------------------------</span>
+<span class="hljs-comment"># Name the first stage "base" to reference later</span>
+<span class="hljs-keyword">FROM</span> node:19.6-bullseye-slim AS base
+<span class="hljs-comment">#-------------------------------------------</span>
+LABEL org.opencontainers.image.<span class="hljs-attribute">authors</span>=<span class="hljs-string">"sid@devopsdirective.com"</span>
+WORKDIR /usr/src/app
+COPY package*.json ./
+<span class="hljs-comment">#-------------------------------------------</span>
+<span class="hljs-comment"># Use the base stage to create dev image</span>
+<span class="hljs-keyword">FROM</span> base AS dev
+<span class="hljs-comment">#-------------------------------------------</span>
+<span class="hljs-built_in">RUN</span> <span class="hljs-attribute">--mount</span>=type=cache,target=/usr/src/app/.npm \
+  npm <span class="hljs-built_in">set</span> cache /usr/src/app/.npm &amp;&amp; \
+  npm install
+COPY . .
+CMD [<span class="hljs-string">"npm"</span>, <span class="hljs-string">"run"</span>, <span class="hljs-string">"dev"</span>]
+<span class="hljs-comment">#-------------------------------------------</span>
+<span class="hljs-comment"># Use the base stage to create separate production image</span>
+<span class="hljs-keyword">FROM</span> base AS production
+<span class="hljs-comment">#-------------------------------------------</span>
+ENV NODE_ENV production
+<span class="hljs-built_in">RUN</span> <span class="hljs-attribute">--mount</span>=type=cache,target=/usr/src/app/.npm \
+  npm <span class="hljs-built_in">set</span> cache /usr/src/app/.npm &amp;&amp; \
+  npm ci <span class="hljs-attribute">--only</span>=production<span class="hljs-built_in">
+USER </span>node
+COPY <span class="hljs-attribute">--chown</span>=node:node ./src/ .
+EXPOSE 3000
+CMD [ <span class="hljs-string">"node"</span>, <span class="hljs-string">"index.js"</span> ]</code></pre></div>
+<h2 id="running-docker-container">Running Docker Container</h2>
+<hr />
+<p>There are two ways to run a docker container</p>
+<ol>
+<li>Create a docker-compose.yml file and do <code>docker compose up</code></li>
+<li>Use <code>docker run</code> command directly</li>
+</ol>
+<p>We can run multiple containers with docker compose at the same time also it manages container life cycle nicely than the <code>docker run</code> option.</p>
+<h3 id="commands-examples">Commands Examples</h3>
+<ol>
+<li><code>docker run --env POSTGRES_PASSWORD=foorbar --publish 5432:5432 postgres:15.1-alpine</code></li>
+<li><code>docker run docker/whalesay cowsay "Hello, World"</code></li>
+<li><code>docker run --interactive --tty --rm ubuntu:22.04</code></li>
+<li><code>docker start &lt;container-name&gt;</code></li>
+<li><code>docker attach &lt;container-name&gt;</code>
+<ul>
+<li>Attach to the shell of running container</li>
+</ul>
+</li>
+<li><code>docker network ls</code> list all network</li>
+<li><code>docker network create my-network</code> creates a my-network docker network</li>
+<li><code>docker run --network my-network ubuntu sleep 99</code> Run container in the custom created network</li>
+</ol>
+<h3 id="most-used-options">Most Used Options</h3>
+<ol start="6">
+<li><code>-d</code> detach and run in background</li>
+<li><code>--entrypoint</code> override entrypoint defined in dockerfile</li>
+<li><code>--env, -e, --env-file</code> Set environment variables in runtime</li>
+<li><code>--init</code> run docker-init process as main process. If not passed the first command/entrypoint will be process id 1 or main process</li>
+<li><code>--interactive --tty</code> or <code>-it</code> We get running shell within that container</li>
+<li><code>--rm</code> removes the container automatically after we stop container process</li>
+<li><code>--name</code> give container a name, can't have two container with same name in the system</li>
+<li><code>--network &lt;name&gt;, --net</code> Assign network to the container</li>
+<li><code>--publish 8080:80, -p</code> is used for mapping port from docker container to host. 8080 is the host port and 80 is container port</li>
+<li><code>--platform &lt;linux/arm64/v8&gt;</code> Run in different CPU architecture, uses QEMU under the hood</li>
+<li><code>--restart unlesss-stopped</code> Restart container if crashed</li>
+<li><code>--cpu-shares</code> No of cpu cycles assigned to the container processes</li>
+<li><code>--memory, -m</code> Amount of memory assigned to the container processes</li>
+<li><code>--pid, --pids-limit</code> No of sub processes the container can create and manage</li>
+<li><code>--privileged</code> Ignore all security config and give privileged level permision to container process</li>
+<li><code>--read-only</code> Make container process read only</li>
+<li><code>--link=db</code> To use <code>db</code>, which points to the db container internal network ip</li>
+</ol>
+<h3 id="docker-compose">Docker Compose</h3>
+<div><pre class="hljs"><code><span class="hljs-string">version:3.9</span>
+<span class="hljs-attr">services:</span>
+    <span class="hljs-attr">service1:</span>
+        <span class="hljs-attr">image:</span> 
+        <span class="hljs-attr">build:</span>
+            <span class="hljs-attr">context:</span>
+            <span class="hljs-attr">dockerfile:</span>
+        <span class="hljs-attr">init:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">volumes:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">host_path/volume:container_path</span> <span class="hljs-comment"># Bind mount</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">bind</span> <span class="hljs-comment"># Another way</span>
+                <span class="hljs-attr">source:</span> <span class="hljs-string">path</span>
+                <span class="hljs-attr">target:</span> <span class="hljs-string">path</span>
+        <span class="hljs-attr">networks:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">network1</span>
+        <span class="hljs-attr">ports:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-number">5173</span><span class="hljs-string">:5173</span>
+    
+    
+    <span class="hljs-attr">service2:</span>
+        <span class="hljs-attr">image:</span>
+        <span class="hljs-attr">build:</span>
+            <span class="hljs-attr">context:</span>
+            <span class="hljs-attr">dockerfile:</span>
+            <span class="hljs-attr">target:</span> <span class="hljs-string">stagename</span>  <span class="hljs-comment"># Build a specific stage only when using multistage build</span>
+        <span class="hljs-attr">init:</span> <span class="hljs-literal">true</span> <span class="hljs-comment"># Good for security</span>
+        <span class="hljs-attr">depends_on:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">service1</span> <span class="hljs-comment"># Starts service1 Before starting this</span>
+        <span class="hljs-attr">environment:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">Key=Value</span>
+        <span class="hljs-attr">networks:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">network1</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">network2</span>
+        <span class="hljs-attr">ports:</span> 
+            <span class="hljs-bullet">-</span> <span class="hljs-number">3000</span><span class="hljs-string">:3000</span>
+        <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
+        
+    <span class="hljs-attr">service3:</span>
+        <span class="hljs-attr">image:</span>
+        <span class="hljs-attr">volumes:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">volume1:container</span> <span class="hljs-string">path</span> <span class="hljs-comment"># Volumes</span>
+        <span class="hljs-attr">environment:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">Key=Value</span>
+        <span class="hljs-attr">networks:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">network2</span>
+        <span class="hljs-attr">ports:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-number">5432</span><span class="hljs-string">:5432</span>
+            
+
+<span class="hljs-comment"># Create Volumes and Network that are being used</span>
+
+<span class="hljs-attr">volumes:</span>
+    <span class="hljs-attr">volume1:</span>
+    
+<span class="hljs-attr">networks:</span>
+    <span class="hljs-attr">network1:</span>
+    <span class="hljs-attr">network2:</span></code></pre></div>
+<p>By default bridge network is created.</p>
+<p>In the above example,</p>
+<ul>
+<li>
+<p><strong>service2 can see both service1 and service3</strong></p>
+</li>
+<li>
+<p><strong>service 1 and service 3 are are not visible to each other</strong></p>
+</li>
+<li>
+<p><code>docker compose up</code> Start all containers and attach to them all</p>
+</li>
+<li>
+<p><code>docker compose up -d</code> Start all container as daemon or detach</p>
+</li>
+<li>
+<p><code>docker compose down</code> Stop all containers</p>
+</li>
+</ul>
+<p><strong>NOTE:</strong> We can use multiple docker-compose.yml file with docker compose up command. In this case, the later file will override the configuration on previous file. So, only the configuration that need to be override can be put into the new docker-compose.yml file.</p>
+<h2 id="container-security">Container Security</h2>
+<hr />
+<h3 id="image-security">Image Security</h3>
+<ul>
+<li>Use minimal base image ( chainguard.dev )</li>
+<li>Scan images <code>docker scout cves image-tag</code></li>
+<li>Use users with minimal permissions</li>
+<li>Keep sensitive info out of images</li>
+<li>Sigh and verify images</li>
+<li>Use fixed image tags ( pin major.minor versions )</li>
+</ul>
+<h3 id="runtime-security">Runtime Security</h3>
+<ul>
+<li>Start docker daemon with <code>--userns-remap</code></li>
+<li>Use <code>--read-only</code> if no write access is required</li>
+<li><code>--cap-drop=all</code>, then <code>--cap-add</code> anything you need</li>
+<li>Limit CPU's and memory</li>
+<li>Use <code>--security-opt</code></li>
+</ul>
+<h2 id="deploying-to-production">Deploying to Production</h2>
+<hr />
+<p><strong>COOL CONCEPT:</strong> You can specify the host where docker engine is running to all docker commands applies to that host. It is possible using ssh.</p>
+<p>Just do,<br />
+<code>export DOCKER_HOST=ssh://user@ip</code><br />
+<strong>Remember</strong>: You should setup your SSH key in the server to make this work</p>
+<h3 id="things-to-keep-in-mind">Things to keep in mind</h3>
+<ol>
+<li>Security</li>
+<li>Ergonomics / Developer Experience</li>
+<li>Scalability</li>
+<li>Downtime</li>
+<li>Observability</li>
+<li>Persistent storage configuration</li>
+<li>Cost</li>
+</ol>
+<h3 id="why-not-use-docker-compose-for-deployment">Why not use Docker Compose for Deployment</h3>
+<ol>
+<li>No way to deploy without downtime</li>
+<li>No way to handle credentials</li>
+<li>Can only be used on a single host</li>
+</ol>
+<h3 id="docker-swarm">Docker Swarm</h3>
+<ul>
+<li><code>docker swarm init</code> Enable swarm mode in the host</li>
+<li><code>docker stack deploy -c docker-swarm.yml stack_name</code> Deploy containers to docker swarm, <strong>docker-swarm.yml</strong> and <strong>docker-compose.yml</strong> are <strong>nearly identical</strong></li>
+<li><code>docker stack rm stack_name</code> To remove stack</li>
+<li><code>docker service ls</code> To list all container services and information about replicas</li>
+<li><code>docker secret create</code> To create secret in the docker host machine</li>
+</ul>
+<p>In the yml file, add following lines</p>
+<div><pre class="hljs"><code><span class="hljs-attr">secrets:</span>
+    <span class="hljs-attr">database-url:</span>
+        <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">postgres-passwd:</span>
+        <span class="hljs-attr">external:</span> <span class="hljs-literal">true</span> <span class="hljs-comment"># Means we dont havve to pass secret here in compose file, its in docker secret alreadys</span></code></pre></div>
+<p>The created secrets will be available to the application through a file. So, application should read the file to get the secret value.</p>
+<div><pre class="hljs"><code><span class="hljs-attr">environment:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">DATABASE_URL=/run/secrets/database-url</span>
+<span class="hljs-attr">secrets:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">database-url</span> <span class="hljs-comment"># Tell application that we'll consume it</span></code></pre></div>
+<p>We can also add deployment configuration to specify no of replicas, and how the updates should be handled</p>
+<div><pre class="hljs"><code><span class="hljs-attr">service:</span>
+    <span class="hljs-attr">deploy:</span>
+        <span class="hljs-attr">mode:</span> <span class="hljs-string">replicated</span>
+        <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span>
+        <span class="hljs-attr">update_config:</span>
+            <span class="hljs-attr">order:</span> <span class="hljs-string">start-first</span> <span class="hljs-comment"># start new container before stopping old one</span></code></pre></div>
+<p>Adding healthcheck will tell the docker engine that the running container is healthy or not.</p>
+<p>While performing updates, the new container won't accept traffic and old containers wont get deleted until the new container status is healthy.</p>
+<div><pre class="hljs"><code><span class="hljs-attr">service:</span>
+    <span class="hljs-attr">healthcheck:</span>
+        <span class="hljs-attr">test:</span> [<span class="hljs-string">"CMD"</span>, <span class="hljs-string">"Put a test command here"</span>]
+        <span class="hljs-attr">interval:</span> <span class="hljs-string">30s</span>
+        <span class="hljs-attr">timeout:</span> <span class="hljs-string">5s</span>
+        <span class="hljs-attr">retries:</span> <span class="hljs-number">3</span> <span class="hljs-comment"># 3 retries before declaring the status unhealthy</span>
+        <span class="hljs-attr">start_period:</span> <span class="hljs-string">10s</span> <span class="hljs-comment"># Performs first health check after 10 seconds container starts</span></code></pre></div>
+<h2 id="docker-network">Docker Network</h2>
+<ul>
+<li><code>bridge</code>: The default network driver.</li>
+<li><code>host</code>:	Remove network isolation between the container and the Docker host.</li>
+<li><code>none</code>	Completely isolate a container from the host and other containers.</li>
+<li><code>overlay</code>	Overlay networks connect multiple Docker daemons together.</li>
+<li><code>ipvlan</code>	IPvlan networks provide full control over both IPv4 and IPv6 addressing.</li>
+<li><code>macvlan</code>	Assign a MAC address to a container.</li>
+</ul>
+<h2 id="docker-volumes">Docker Volumes</h2>
+<p>Volumes are stored in a part of the host filesystem which is managed by Docker (/var/lib/docker/volumes/ on Linux). Non-Docker processes should not modify this part of the filesystem. Volumes are the best way to persist data in Docker.</p>
+<p>Bind mounts may be stored anywhere on the host system. They may even be important system files or directories. Non-Docker processes on the Docker host or a Docker container can modify them at any time.</p>
+<p>tmpfs mounts are stored in the host system's memory only, and are never written to the host system's filesystem.</p>
+<p><img src="/_resources/545018fbfbfe421c86569d216d01e679.png" /></p>
+<h2 id="references">References</h2>
+<ul>
+<li><a title="https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile" href="https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile">https://courses.devopsdirective.com/docker-beginner-to-pro/lessons/06-building-container-images/01-what-is-a-dockerfile</a></li>
+</ul>
 ]]></content:encoded>
         </item>
     </channel>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>Deploying docker image to k8s using azure container registry - Notes by Aadarsha</title>
+  <link rel="stylesheet" href="/_markdown_plugin_assets/highlight.js/atom-one-light.css" /></head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">Notes by Aadarsha</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">Deploying docker image to k8s using azure container registry</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1721221301025"
+                  >2024-07-17 18:46</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1721238711003"
+                  >2024-07-17 23:36</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><ol>
+<li>Install azure cli</li>
+<li>Login to azure cli <code>az login</code></li>
+<li>Create a container registry from azure portal, replace ACR_NAME and SERVICE_PRINCIPLE_NAME in the below script.</li>
+<li>Create a service principle</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-comment"># This script requires Azure CLI version 2.25.0 or later. Check version with `az --version`.</span>
+
+<span class="hljs-comment"># Modify for your environment.</span>
+<span class="hljs-comment"># ACR_NAME: The name of your Azure Container Registry</span>
+<span class="hljs-comment"># SERVICE_PRINCIPAL_NAME: Must be unique within your AD tenant</span>
+ACR_NAME=<span class="hljs-variable">$containerRegistry</span>
+SERVICE_PRINCIPAL_NAME=<span class="hljs-variable">$servicePrincipal</span>
+
+<span class="hljs-comment"># Obtain the full registry ID</span>
+ACR_REGISTRY_ID=$(az acr show --name <span class="hljs-variable">$ACR_NAME</span> --query <span class="hljs-string">"id"</span> --output tsv)
+<span class="hljs-comment"># echo $registryId</span>
+
+<span class="hljs-comment"># Create the service principal with rights scoped to the registry.</span>
+<span class="hljs-comment"># Default permissions are for docker pull access. Modify the '--role'</span>
+<span class="hljs-comment"># argument value as desired:</span>
+<span class="hljs-comment"># acrpull:     pull only</span>
+<span class="hljs-comment"># acrpush:     push and pull</span>
+<span class="hljs-comment"># owner:       push, pull, and assign roles</span>
+PASSWORD=$(az ad sp create-for-rbac --name <span class="hljs-variable">$SERVICE_PRINCIPAL_NAME</span> --scopes <span class="hljs-variable">$ACR_REGISTRY_ID</span> --role acrpull --query <span class="hljs-string">"password"</span> --output tsv)
+USER_NAME=$(az ad sp list --display-name <span class="hljs-variable">$SERVICE_PRINCIPAL_NAME</span> --query <span class="hljs-string">"[].appId"</span> --output tsv)
+
+<span class="hljs-comment"># Output the service principal's credentials; use these in your services and</span>
+<span class="hljs-comment"># applications to authenticate to the container registry.</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Service principal ID: <span class="hljs-variable">$USER_NAME</span>"</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">"Service principal password: <span class="hljs-variable">$PASSWORD</span>"</span></code></pre></div>
+<p>5.Create NFS for persisting data<br />
+6. Create a PV in master node<br />
+7. Create a PVC in master node<br />
+8. Create a secret</p>
+<div><pre class="hljs"><code>kubectl create<span class="hljs-built_in"> secret </span>docker-registry &lt;secret-name&gt; \
+    --namespace &lt;namespace&gt; \
+    <span class="hljs-attribute">--docker-server</span>=&lt;container-registry-name&gt;.azurecr.io \
+    <span class="hljs-attribute">--docker-username</span>=&lt;service-principal-ID&gt; \
+    <span class="hljs-attribute">--docker-password</span>=&lt;service-principal-password&gt;</code></pre></div>
+<ol start="9">
+<li>Use in deployment</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">my-awesome-app-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">awesomeapps</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">main-app-container</span>
+      <span class="hljs-attr">image:</span> <span class="hljs-string">myregistry.azurecr.io/my-awesome-app:v1</span>
+      <span class="hljs-attr">imagePullPolicy:</span> <span class="hljs-string">IfNotPresent</span>
+  <span class="hljs-attr">imagePullSecrets:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">acr-secret</span></code></pre></div>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
