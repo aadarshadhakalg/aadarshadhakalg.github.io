@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 22 Aug 2024 17:25:16 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 22 Aug 2024 17:26:51 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -108,6 +108,123 @@ Restart the Zabbix server, agent, Nginx, and PHP-FPM services:</p>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This installation note is generated based on command history and may not cover all potential issues or configurations specific to your environment. Always refer to the official Zabbix documentation for detailed instructions and best practices.</p>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Installing Ubuntu and Setup Cockpit]]></title>
+            <guid>17a2353103324fb7baa46e408dc81c21</guid>
+            <pubDate>Tue, 13 Aug 2024 05:22:46 GMT</pubDate>
+            <content:encoded><![CDATA[<p>Installing Ubuntu and Setup Cockpit</p>
+<ol>
+<li>Configure Raid 1 using existing disk. ( Will clean up disks )</li>
+<li>Install ubuntu</li>
+<li>Create /etc/netplan/01-netcfg.yaml with following contents:</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-symbol">network:</span>
+<span class="hljs-symbol">        renderer:</span> NetworkManager <span class="hljs-comment">// Required by cockpit</span>
+<span class="hljs-symbol">    ethernets:</span>
+<span class="hljs-symbol">        eno1:</span>
+<span class="hljs-symbol">            dhcp4:</span> false
+<span class="hljs-symbol">            dhcp6:</span> false
+<span class="hljs-symbol">            addresses:</span>
+            - <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.11</span>/<span class="hljs-number">28</span>
+<span class="hljs-symbol">            routes:</span>
+            - to: default
+<span class="hljs-symbol">              via:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.1</span>
+<span class="hljs-symbol">            nameservers:</span> 
+<span class="hljs-symbol">             addresses:</span>
+               - <span class="hljs-number">192.168</span><span class="hljs-number">.88</span><span class="hljs-number">.1</span>
+               - <span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span>
+<span class="hljs-symbol">        eno2:</span>
+<span class="hljs-symbol">            dhcp4:</span> false
+            activation-mode: off <span class="hljs-comment">// disables port </span>
+<span class="hljs-comment">// Because network manager online wait service was failing causing a longer boot time</span>
+<span class="hljs-symbol">    version:</span> <span class="hljs-number">2</span></code></pre></div>
+<p>Since we are using NetworkManager as a renderer, we can also disable networkd</p>
+<div><pre class="hljs"><code>sudo systemctl <span class="hljs-built_in">disable</span> systemd-networkd.service
+sudo systemctl <span class="hljs-built_in">disable</span> systemd-networkd.socket
+sudo systemctl <span class="hljs-built_in">disable</span> networkd-dispatcher.service</code></pre></div>
+<ol start="4">
+<li>Install cockpit</li>
+</ol>
+<div><pre class="hljs"><code><span class="hljs-comment">sudo apt install cockpit </span>
+<span class="hljs-comment">sudo apt install cockpit-machines libvirtd</span>
+<span class="hljs-comment">sudo</span> <span class="hljs-comment">systemctl</span> <span class="hljs-comment">enable</span> <span class="hljs-comment">cockpit</span>
+<span class="hljs-comment">sudo</span> <span class="hljs-comment">systemctl</span> <span class="hljs-comment">start</span> <span class="hljs-comment">cockpit</span></code></pre></div>
+<p>Cockpit ony works with Network Manager as a render</p>
+<ol start="5">
+<li>Disable networkd-online-wait service / NetworkManager-wait-online.service was causing longer boot time<br />
+<code>sudo systemctl disable systemd-networkd-wait-online.service</code><br />
+<code>sudo systemctl disable NetworkManager-wait-online.service</code></li>
+</ol>
+<p><img src="/_resources/35f70d39952d45e792fc947ad60cf9da.png" /></p>
+<p><a title="https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2" href="https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2">https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2</a></p>
+]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Storage Locked / Cannot Use CEPH pool]]></title>
+            <guid>8ef3d8f14d624ec1b2e204410bf573fd</guid>
+            <pubDate>Sat, 03 Aug 2024 17:10:18 GMT</pubDate>
+            <content:encoded><![CDATA[<p>cThis issue arises when you have a bad CRUSH rule or overall Ceph configuration set.</p>
+<p>First of all, check the replication rule in the pool configuration.</p>
+<p>In my case, I had set the <code>crush rule</code> or <code>replication</code> to <code>replicated_rule</code>, which by default disperses replicas across different hosts. I was running a single-node cluster, so the total number of hosts was 1. However, my number of replicas was set to 3 and the minimum number of replicas was set to 2. Since there was a single host, and the replication type was set to host, and the minimum replica was set to 2, the configuration failed.</p>
+<p>For me, there were two solutions: either decrease the minimum replica to 1 to match the number of hosts, or, since I had two OSDs, change the replication type to OSD.</p>
+<p>Both solutions work, but I preferred the second, so I set the replication type to OSD because some amount of redundancy is necessary to keep the data safe.</p>
+<h2 id="creating-a-crush-rule">Creating a CRUSH Rule</h2>
+<p>There are two types of replication:</p>
+<ol>
+<li>Across hosts</li>
+<li>Across OSDs</li>
+</ol>
+<p>Step-by-step commands:</p>
+<ol>
+<li><code>ceph osd tree</code></li>
+<li><code>ceph osd crush rule create-replicated replicated_osd default osd</code></li>
+<li><code>ceph osd pool set prodpool crush_rule replicated_osd</code></li>
+</ol>
+<p>If you encounter any issues while using Ceph with Proxmox VE, or if you applied a wrong or bad configuration by mistake and are unable to log in to the Proxmox VE web interface, please fix the Ceph issue first using the command line by logging into an SSH session and then restarting Proxmox system services:</p>
+<div><pre class="hljs"><code>systemctl restart pve-cluster.service
+systemctl restart pvedaemon.service
+systemctl restart pveproxy.service</code></pre></div>
+<h3 id="cheatsheet">Cheatsheet</h3>
+<ol>
+<li>
+<p>Dump details of all CRUSH rules:</p>
+<div><pre class="hljs"><code>ceph osd crush rule dump</code></pre></div>
+</li>
+<li>
+<p>List all CRUSH rules:</p>
+<div><pre class="hljs"><code>ceph osd crush rule ls</code></pre></div>
+</li>
+<li>
+<p>List OSD Tree:</p>
+<div><pre class="hljs"><code>ceph osd tree</code></pre></div>
+</li>
+<li>
+<p>Remove a CRUSH rule:</p>
+<div><pre class="hljs"><code>ceph osd crush rule rm &lt;name&gt;</code></pre></div>
+</li>
+<li>
+<p>Create a CRUSH rule:</p>
+<div><pre class="hljs"><code>ceph osd crush rule create-replicated &lt;rule_name&gt; &lt;crush_tree_root&gt; &lt;<span class="hljs-built_in">type</span>&gt; [&lt;class&gt;]</code></pre></div>
+<p>Example:</p>
+<div><pre class="hljs"><code>ceph osd crush rule create-replicated replicated_osd default osd</code></pre></div>
+</li>
+<li>
+<p>List all pools:</p>
+<div><pre class="hljs"><code>ceph osd pool ls</code></pre></div>
+</li>
+<li>
+<p>Show pool status:</p>
+<div><pre class="hljs"><code>ceph osd pool stats</code></pre></div>
+</li>
+<li>
+<p>Set CRUSH rule to the pool:</p>
+<div><pre class="hljs"><code>ceph osd pool <span class="hljs-built_in">set</span> &lt;pool_name&gt; crush_rule &lt;crush_rule_name&gt;</code></pre></div>
+<p>Example:</p>
+<div><pre class="hljs"><code>ceph osd pool <span class="hljs-built_in">set</span> prodpool crush_rule replicated_osd</code></pre></div>
+</li>
+</ol>
 ]]></content:encoded>
         </item>
     </channel>
