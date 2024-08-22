@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Thu, 22 Aug 2024 17:27:51 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 22 Aug 2024 17:31:16 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -108,57 +108,6 @@ Restart the Zabbix server, agent, Nginx, and PHP-FPM services:</p>
 </ol>
 <h3 id="disclaimer">Disclaimer</h3>
 <p>This installation note is generated based on command history and may not cover all potential issues or configurations specific to your environment. Always refer to the official Zabbix documentation for detailed instructions and best practices.</p>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Installing Ubuntu and Setup Cockpit]]></title>
-            <guid>17a2353103324fb7baa46e408dc81c21</guid>
-            <pubDate>Tue, 13 Aug 2024 05:22:46 GMT</pubDate>
-            <content:encoded><![CDATA[<p>Installing Ubuntu and Setup Cockpit</p>
-<ol>
-<li>Configure Raid 1 using existing disk. ( Will clean up disks )</li>
-<li>Install ubuntu</li>
-<li>Create /etc/netplan/01-netcfg.yaml with following contents:</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-symbol">network:</span>
-<span class="hljs-symbol">        renderer:</span> NetworkManager <span class="hljs-comment">// Required by cockpit</span>
-<span class="hljs-symbol">    ethernets:</span>
-<span class="hljs-symbol">        eno1:</span>
-<span class="hljs-symbol">            dhcp4:</span> false
-<span class="hljs-symbol">            dhcp6:</span> false
-<span class="hljs-symbol">            addresses:</span>
-            - <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.11</span>/<span class="hljs-number">28</span>
-<span class="hljs-symbol">            routes:</span>
-            - to: default
-<span class="hljs-symbol">              via:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.2</span><span class="hljs-number">.1</span>
-<span class="hljs-symbol">            nameservers:</span> 
-<span class="hljs-symbol">             addresses:</span>
-               - <span class="hljs-number">192.168</span><span class="hljs-number">.88</span><span class="hljs-number">.1</span>
-               - <span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span>
-<span class="hljs-symbol">        eno2:</span>
-<span class="hljs-symbol">            dhcp4:</span> false
-            activation-mode: off <span class="hljs-comment">// disables port </span>
-<span class="hljs-comment">// Because network manager online wait service was failing causing a longer boot time</span>
-<span class="hljs-symbol">    version:</span> <span class="hljs-number">2</span></code></pre></div>
-<p>Since we are using NetworkManager as a renderer, we can also disable networkd</p>
-<div><pre class="hljs"><code>sudo systemctl <span class="hljs-built_in">disable</span> systemd-networkd.service
-sudo systemctl <span class="hljs-built_in">disable</span> systemd-networkd.socket
-sudo systemctl <span class="hljs-built_in">disable</span> networkd-dispatcher.service</code></pre></div>
-<ol start="4">
-<li>Install cockpit</li>
-</ol>
-<div><pre class="hljs"><code><span class="hljs-comment">sudo apt install cockpit </span>
-<span class="hljs-comment">sudo apt install cockpit-machines libvirtd</span>
-<span class="hljs-comment">sudo</span> <span class="hljs-comment">systemctl</span> <span class="hljs-comment">enable</span> <span class="hljs-comment">cockpit</span>
-<span class="hljs-comment">sudo</span> <span class="hljs-comment">systemctl</span> <span class="hljs-comment">start</span> <span class="hljs-comment">cockpit</span></code></pre></div>
-<p>Cockpit ony works with Network Manager as a render</p>
-<ol start="5">
-<li>Disable networkd-online-wait service / NetworkManager-wait-online.service was causing longer boot time<br />
-<code>sudo systemctl disable systemd-networkd-wait-online.service</code><br />
-<code>sudo systemctl disable NetworkManager-wait-online.service</code></li>
-</ol>
-<p><img src="/_resources/35f70d39952d45e792fc947ad60cf9da.png" /></p>
-<p><a title="https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2" href="https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2">https://www.nixcraft.com/t/ubuntu-error-connection-activation-failed-connection-is-not-available-on-device-because-device-is-strictly-unmanaged/4533/2</a></p>
 ]]></content:encoded>
         </item>
         <item>
